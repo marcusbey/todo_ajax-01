@@ -85,6 +85,11 @@
                         </div>
                         `
                 wrapper.innerHTML += item;
+
+                const editBtn = document.getElementsByClassName('edit')[i];
+                editBtn.addEventListener('click', function(){
+                    editItem();
+                })
                 }
             });
         }
@@ -107,6 +112,10 @@
                 }
                 )
              });
+
+        function editItem(){
+            console.log('Item clicked');
+        }
 
     </script>
 </body>
