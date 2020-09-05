@@ -56,8 +56,8 @@
                 }
                 return cookieValue;
             }
-         const csrftoken = getCookie('csrftoken');
-
+        const csrftoken = getCookie('csrftoken');       
+        let activeItem = null;
 
         buildlist();
         function buildlist(){
@@ -70,7 +70,7 @@
                 console.log('Data:', data);
                 
                 const list = data;
-                for(let i in list){
+                for( let i in list){
                     const item = `
                         <div id="data-row-${i}" class="task-wrapper flex-wrapper">
                             <div style="flex:7">
@@ -85,13 +85,16 @@
                         </div>
                         `
                 wrapper.innerHTML += item;
-
-                const editBtn = document.getElementsByClassName('edit')[i];
-                editBtn.addEventListener('click', function(){
-                    editItem();
-                })
                 }
-            });
+                for (let i in list){
+                    const editBtn = document.getElementsByClassName('edit')[i];
+                    editBtn.addEventListener('click', (function(item){
+                        return function(){
+                            editItem(list[i])  
+                        }    
+                    })(list[i]))
+                }
+            })
         }
 
         const form = document.getElementById('form-wrapper');
@@ -113,10 +116,11 @@
                 )
              });
 
-        function editItem(){
-            console.log('Item clicked');
+        function editItem(item){
+            console.log('Item clicked: ', item);
+            activeItem = item;
+            document.getElementById('title').value = activeItem.title ; 
         }
-
     </script>
-</body>
+</body> 
 </html>
