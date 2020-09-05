@@ -50,7 +50,6 @@ def taskUpdate(request, pk):
     serializer = TaskSerializer(instance=task, data=request.data)
     if serializer.is_valid():
         serializer.save()
-
     return Response(serializer.data)
 
 
