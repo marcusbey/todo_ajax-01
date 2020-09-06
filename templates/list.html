@@ -58,23 +58,32 @@
             }
         const csrftoken = getCookie('csrftoken');       
         let activeItem = null;
-
+        let list_snapshot = [];
         buildlist();
         function buildlist(){
             const wrapper = document.getElementById('list-wrapper');
-            wrapper.innerHTML = '';
+            //wrapper.innerHTML = '';
+           
             const url = 'http://127.0.0.1:8000/api/task-list/';
             fetch(url)
             .then((resp) => resp.json())
             .then(function(data){
                 console.log('Data:', data);
-                
                 const list = data;
-                for( let i in list){
+                for (let i in list) {
+                    try{
+                        document.getElementById(`data-row-${i}`).remove()
+                        }catch(err){
+
+                    }
+                    let title = `<span class="title">${list[i].title}</span>`;
+                    if (list[i].completed == true){
+                        title = `<strike class="title">${list[i].title}</strike>`
+                    }
                     const item = `
                         <div id="data-row-${i}" class="task-wrapper flex-wrapper">
                             <div style="flex:7">
-                                <span class="title">${list[i].title}</span>
+                                ${title}
                             </div>
                             <div style="flex:1">
                                 <button class="btn btn-sm btn-outline-info edit">Edit</button>
@@ -86,23 +95,41 @@
                         `
                 wrapper.innerHTML += item;
                 }
+                if (list_snapshot.length > list.length) {
+                    for(let i = list.length; i < list_snapshot.length; i++) {
+                        document.getElementById(`data-row-${i}`).remove()
+                    }
+                }
+                list_snapshot = list;
+
                 for (let i in list){
                     const editBtn = document.getElementsByClassName('edit')[i];
                     const deleteBtn = document.getElementsByClassName('delete')[i];
+                    const title = document.getElementsByClassName('title')[i];
+
                     editBtn.addEventListener('click', (function(item){
                         return function(){
-                            editItem(list[i])  
-                        }    
+                            editItem(item);  
+                        };    
                     })(list[i]))
+
                     deleteBtn.addEventListener('click', (function(item){
                         return function(){
-                            deleteItem(list[i])  
-                        }    
+                            deleteItem(item);  
+                        };    
+                    })(list[i]))
+
+                    title.addEventListener('click', (function(item){
+                        return function(){
+                            strickeUnstricke(item);  
+                        };    
                     })(list[i]))
                 }
 
             })
+
         }
+        
 
         const form = document.getElementById('form-wrapper');
         form.addEventListener('submit', function(e){
@@ -129,7 +156,6 @@
              });
 
         function editItem(item){
-        
             console.log('Item clicked: ', item);
             activeItem = item;
             document.getElementById('title').value = activeItem.title ; 
@@ -139,7 +165,7 @@
             console.log('delete item');
             fetch(`http://127.0.0.1:8000/api/task-delete/${item.id}/`, {
                 method: 'DELETE',
-                header: {
+                headers: {
                     'Content-Type' : 'application/json',
                     'X-CSRFToken' : csrftoken,
                 }
@@ -147,6 +173,25 @@
                 buildlist(); 
                 })
         }
+
+        function strickeUnstricke(item){
+            item.completed = !item.completed;
+            fetch(`http://127.0.0.1:8000/api/task-update/${item.id}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'X-CSRFToken' : csrftoken,
+                },
+                body: JSON.stringify({
+                    'title': item.title, 
+                    'completed': item.completed,
+                })
+                }
+            ).then((response) => {
+                buildlist(); 
+                })
+        } 
+
     </script>
 </body> 
 </html>
