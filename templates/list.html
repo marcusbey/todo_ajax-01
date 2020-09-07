@@ -59,12 +59,13 @@
         const csrftoken = getCookie('csrftoken');       
         let activeItem = null;
         let list_snapshot = [];
+        const linkUrl = window.location.origin;
         buildlist();
         function buildlist(){
             const wrapper = document.getElementById('list-wrapper');
             //wrapper.innerHTML = '';
            
-            const url = 'http://127.0.0.1:8000/api/task-list/';
+            const url = linkUrl + '/api/task-list/';
             fetch(url)
             .then((resp) => resp.json())
             .then(function(data){
@@ -135,9 +136,9 @@
         form.addEventListener('submit', function(e){
             e.preventDefault();
             console.log('Form submited');
-            let url = 'http://127.0.0.1:8000/api/task-create/';
+            let url = linkUrl + '/api/task-create/';
             if (activeItem != null){
-                url = `http://127.0.0.1:8000/api/task-update/${activeItem.id}/`;
+                url = `${linkUrl}/api/task-update/${activeItem.id}/`;
                 activeItem = null;
             }
             const title = document.getElementById('title').value;
@@ -163,7 +164,7 @@
 
         function deleteItem(item){
             console.log('delete item');
-            fetch(`http://127.0.0.1:8000/api/task-delete/${item.id}/`, {
+            fetch(`${linkUrl}/api/task-delete/${item.id}/`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type' : 'application/json',
@@ -176,7 +177,7 @@
 
         function strickeUnstricke(item){
             item.completed = !item.completed;
-            fetch(`http://127.0.0.1:8000/api/task-update/${item.id}/`, {
+            fetch(`${linkUrl}/api/task-update/${item.id}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',
