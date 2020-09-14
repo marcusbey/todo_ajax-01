@@ -26,6 +26,7 @@ whitenoise = "==5.2.0"
 wrapt = "==1.12.1"
 Django = "==3.0.4"
 Markdown = "==3.2.2"
+django-cors-headers = "==3.5.0"
 
 [requires]
 python_version = "3.8"
