@@ -31,32 +31,18 @@
 			</div>
 
 			<div id="list-wrapper">
-			
-			</div>	
+
+			</div>
         </div>
-        
+
 	</div>
 
 
-    
-    <script type='text/javascript'> 
 
-        function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-        const csrftoken = getCookie('csrftoken');       
+    <script type='text/javascript'>
+
+
+        const csrftoken = getCookie('csrftoken');
         let activeItem = null;
         let list_snapshot = [];
         const linkUrl = window.location.origin;
@@ -64,7 +50,7 @@
         function buildlist(){
             const wrapper = document.getElementById('list-wrapper');
             //wrapper.innerHTML = '';
-           
+
             const url = linkUrl + '/api/task-list/';
             fetch(url)
             .then((resp) => resp.json())
@@ -110,27 +96,27 @@
 
                     editBtn.addEventListener('click', (function(item){
                         return function(){
-                            editItem(item);  
-                        };    
+                            editItem(item);
+                        };
                     })(list[i]))
 
                     deleteBtn.addEventListener('click', (function(item){
                         return function(){
-                            deleteItem(item);  
-                        };    
+                            deleteItem(item);
+                        };
                     })(list[i]))
 
                     title.addEventListener('click', (function(item){
                         return function(){
-                            strickeUnstricke(item);  
-                        };    
+                            strickeUnstricke(item);
+                        };
                     })(list[i]))
                 }
 
             })
 
         }
-        
+
 
         const form = document.getElementById('form-wrapper');
         form.addEventListener('submit', function(e){
@@ -148,7 +134,7 @@
                     'Content-Type' : 'application/json',
                     'X-CSRFToken' : csrftoken,
                 },
-                body: JSON.stringify({'title': title}), 
+                body: JSON.stringify({'title': title}),
             }).then(function(response){
                 buildlist();
                 document.getElementById('form').reset();
@@ -159,7 +145,7 @@
         function editItem(item){
             console.log('Item clicked: ', item);
             activeItem = item;
-            document.getElementById('title').value = activeItem.title ; 
+            document.getElementById('title').value = activeItem.title ;
         }
 
         function deleteItem(item){
@@ -171,7 +157,7 @@
                     'X-CSRFToken' : csrftoken,
                 }
             }).then((response) => {
-                buildlist(); 
+                buildlist();
                 })
         }
 
@@ -184,16 +170,16 @@
                     'X-CSRFToken' : csrftoken,
                 },
                 body: JSON.stringify({
-                    'title': item.title, 
+                    'title': item.title,
                     'completed': item.completed,
                 })
                 }
             ).then((response) => {
-                buildlist(); 
+                buildlist();
                 })
-        } 
+        }
 
     </script>
 
-</body> 
+</body>
 </html>
